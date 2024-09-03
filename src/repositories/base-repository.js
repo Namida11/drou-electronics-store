@@ -19,17 +19,17 @@ export class BaseRepository {
   async findAll(page, limit) {
     if (page && limit) {
       const skip = (page - 1) * limit;
-      const entities = await this.model.find().skip(skip).limit(limit);
+      const datas = await this.model.find().skip(skip).limit(limit);
       const totalEntities = await this.model.countDocuments();
       return {
-        entities,
+        datas,
         totalEntities,
       };
     }
-    const entities = await this.model.find();
+    const result = await this.model.find();
     return {
-      entities,
-      totalEntities: entities.length,
+      result,
+      totalData: result.length,
     };
   }
 

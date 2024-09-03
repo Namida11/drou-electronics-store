@@ -8,13 +8,13 @@ class BaseResponse {
 }
 
 class SuccessResponse extends BaseResponse {
-  constructor(status, message = null, data = null) {
+  constructor(status = 200, message = null, data = null) {
     super(status, true, message, data);
   }
 }
 
 class ErrorResponse extends BaseResponse {
-  constructor(status, message = null) {
+  constructor(status = 400, message = null) {
     super(status, false, message);
   }
 }
