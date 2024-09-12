@@ -3,6 +3,7 @@ import authRoute from "./auth-route.js";
 import userRoute from "./user-route.js";
 import categoryRoute from "./category-route.js";
 import subcategoryRoute from "./sub-category-route.js";
+import brandRoute from "./brand-route.js";
 import authMiddleware from "../middlewares/auth-middleware.js";
 import { isAdmin } from "../middlewares/isAdmin.js";
 const route = Router();
@@ -15,5 +16,7 @@ route.get("/admin", authMiddleware, isAdmin, (req, res) => {
 
 route.use("/category", categoryRoute);
 route.use("/subcategory", subcategoryRoute);
+route.use("/brand", brandRoute);
+route.use("/color", brandRoute);
 
 export default route;
