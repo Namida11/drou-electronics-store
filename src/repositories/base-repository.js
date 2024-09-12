@@ -12,11 +12,16 @@ export class BaseRepository {
     return await this.model.findOne(query);
   }
 
+  async findByFields(filter) {
+    return await this.model.find(filter);
+  }
+
   async findByID(id) {
     return await this.model.findById(id);
   }
 
   async findAll(page, limit) {
+    // const query = { isDeleted: false };
     if (page && limit) {
       const skip = (page - 1) * limit;
       const datas = await this.model.find().skip(skip).limit(limit);

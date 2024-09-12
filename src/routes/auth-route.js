@@ -1,12 +1,12 @@
 import { AuthController } from "../controllers/auth-controller.js";
 
 import { Router } from "express";
-// import validate from "../middlewares/validate.js";
-// import { registerSchema } from "../schema-validations/user-validation-schema.js";
+import validate from "../middlewares/validate.js";
+import { registerSchema } from "../validation/user-validation/auth-schema-validation.js";
 const route = Router();
 
-route.post("/verify", AuthController.login);
+route.post("/login", AuthController.login);
 
-route.post("/register", AuthController.register);
+route.post("/register", validate(registerSchema), AuthController.register);
 
 export default route;

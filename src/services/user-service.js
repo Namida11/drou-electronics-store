@@ -1,6 +1,7 @@
 import { UserRepository } from "../repositories/user-repository.js";
 import APIErrors from "../utils/response/error.js";
 import hashPassword from "../utils/auth/hash-password.js";
+import UserDto from "../dtos/user-dto.js";
 
 const userRepo = new UserRepository();
 
@@ -21,13 +22,22 @@ const UserService = {
     };
 
     const createdUser = await userRepo.create(newUser);
-
-    return createdUser;
+    const result = new UserDto(createdUser);
+    return result;
   },
   getAllUsers: async function (page, limit) {
-    const allData = await userRepo.findAll(page, limit);
+    try {
+      const { result, totalData } = await userRepo.findAll(page, limit);
 
-    return allData;
+      const allUserDtos = result.map((data) => new UserDto(data.toObject()));
+
+      return {
+        users: allUserDtos,
+        totalData: totalData,
+      };
+    } catch (error) {
+      throw new Error(error);
+    }
   },
 };
 

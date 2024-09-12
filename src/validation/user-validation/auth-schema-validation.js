@@ -10,10 +10,12 @@ const registerSchema = Joi.object({
   lastName: baseNameField,
   email: baseEmailField,
   password: basePasswordField,
-  confirmPassword: Joi.string().valid(Joi.ref("password")).required().messages({
-    "any.only": `Confirm password does not match password`,
-    "any.required": `Confirm password is a required field`,
-  }),
+  role: Joi.string()
+    .valid("user", "admin")
+    .optional() // opsiyonel yapıyoruz, gönderilmezse sorun yaratmayacak
+    .messages({
+      "string.valid": "Role must be either 'user' or 'admin'",
+    }),
 });
 
 const loginSchema = Joi.object({

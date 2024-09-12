@@ -7,13 +7,28 @@ import { ErrorResponse } from "../utils/response/response.js";
 import { UserRepository } from "../repositories/user-repository.js";
 import UserDto from "../dtos/user-dto.js";
 import AuthDto from "../dtos/auth-dto.js";
+import LoginDto from "../dtos/login-dto.js";
+import { handleUserRedirect } from "../utils/auth/handle-user-redirect.js";
 
 const userRepo = new UserRepository();
 const AuthService = {
   register: async function (authDto) {
     const createdUser = await UserService.create(authDto);
 
-    return createdUser;
+    const payload = {
+      id: createdUser._id,
+      email: createdUser.email,
+      role: createdUser.role,
+    };
+
+    const token = createToken(payload, process.env.JWT_SECRET, "1h");
+
+    const result = {
+      user: new LoginDto(createdUser),
+      token: token,
+    };
+
+    return handleUserRedirect(result);
   },
 
   login: async function (loginDto) {
@@ -31,7 +46,7 @@ const AuthService = {
     );
 
     if (!isPasswordValid) {
-      throw new APIErrors("Invalid credentials", 401);
+      throw new APIErrors("Password or email incorrect", 401);
     }
 
     const payload = {
@@ -43,13 +58,14 @@ const AuthService = {
     const token = createToken(payload, process.env.JWT_SECRET, "1h");
 
     console.log(token);
+    const user = new LoginDto(userExist);
 
     const result = {
-      user: new UserDto(userExist),
+      user: user,
       token: token,
     };
 
-    return result;
+    return handleUserRedirect(result);
   },
 };
 

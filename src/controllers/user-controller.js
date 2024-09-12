@@ -15,7 +15,9 @@ export const UserController = {
     const limit = parseInt(req.query.limit) || null;
 
     const response = await UserService.getAllUsers(page, limit);
+
     console.log(response, "response");
+    
     return res.json(
       new SuccessResponse(200, "data return succefully", response)
     );

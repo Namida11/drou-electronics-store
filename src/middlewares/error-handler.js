@@ -6,9 +6,8 @@ const errorHandlerMiddleware = (err, req, res, next) => {
     return res.json(new ErrorResponse(err.statusCode || 400, err.message));
   }
   next();
-  return res.json(
-    new ErrorResponse(500, "We encountered an error please check the APIs")
-  );
+
+  return res.json(new ErrorResponse(500, err.message));
 };
 
 export default errorHandlerMiddleware;

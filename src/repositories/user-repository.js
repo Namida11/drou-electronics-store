@@ -5,4 +5,5 @@ export class UserRepository extends BaseRepository {
   constructor() {
     super(User);
   }
+  
 }
