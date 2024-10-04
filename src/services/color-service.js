@@ -1,5 +1,5 @@
 import ColorDto from "../dtos/color-dto.js";
-import { ColorRepository } from "../repositories/color/color-repository.js";
+import { ColorRepository } from "../repositories/color-repository.js";
 import APIError from "../utils/response/error.js";
 
 const colorRepo = new ColorRepository();

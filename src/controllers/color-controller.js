@@ -1,4 +1,4 @@
-import ColorService from "../services/color/color-service.js";
+import ColorService from "../services/color-service.js";
 import { ErrorResponse, SuccessResponse } from "../utils/response/response.js";
 
 const ColorController = {
