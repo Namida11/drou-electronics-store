@@ -6,6 +6,7 @@ import subcategoryRoute from "./sub-category-route.js";
 import brandRoute from "./brand-route.js";
 import colorRoute from "./color-route.js";
 import productRoute from "./product-route.js";
+import orderRoute from "./order-route.js";
 import authMiddleware from "../middlewares/auth-middleware.js";
 import { isAdmin } from "../middlewares/isAdmin.js";
 const route = Router();
@@ -21,5 +22,6 @@ route.use("/subcategory", subcategoryRoute);
 route.use("/brand", brandRoute);
 route.use("/color", colorRoute);
 route.use("/products", productRoute);
+route.use("/orders", orderRoute);
 
 export default route;
