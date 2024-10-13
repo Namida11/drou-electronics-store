@@ -1,15 +1,13 @@
 import SubCategoryDto from "../../dtos/sub-category-dto.js";
-import { CategoryRepository } from "../../repositories/category/category-repository.js";
 import { SubCategoryRepository } from "../../repositories/category/sub-category-repository.js";
 import APIError from "../../utils/response/error.js";
+import referencesValidation from "../../validation/references/references-validation.js";
 
 const subCategoryRepo = new SubCategoryRepository();
-const categroyRepo = new CategoryRepository();
 
 const SubCategoryService = {
   create: async function (subCtg) {
-    const allCtg = await categroyRepo.findAll();
-
+    console.log("first");
     const existingSubCategory = await subCategoryRepo.findByUniqueFields({
       name: subCtg.name,
       parentCategory: subCtg.parentCategory,
@@ -27,10 +25,11 @@ const SubCategoryService = {
     if (existingSubCategory && !existingSubCategory.isDeleted) {
       throw new APIError("This sub-category already exists!");
     }
-    const isExistCtg = allCtg.map((ctg) => ctg.id == subCtg.parentCategoryID);
-    if (isExistCtg.length == 0) {
-      throw new APIError("This category doesnot exist!");
-    }
+    await referencesValidation.validateReference(
+      referencesValidation.categoryRepo,
+      subCtg.parentCategoryID,
+      "Category"
+    );
     const newSubCategory = await subCategoryRepo.create(subCtg);
     return new SubCategoryDto(newSubCategory);
   },
@@ -62,19 +61,28 @@ const SubCategoryService = {
   },
 
   update: async function (subCategoryId, subCategoryData) {
-    console.log(subCategoryId, "sub ctg");
     const subCategory = await subCategoryRepo.findByID(subCategoryId);
     console.log(subCategory, "subctg");
+
     if (!subCategory) {
       throw new APIError("Sub-category not found!");
     }
 
-    subCategory.name = subCategoryData.name || subCategory.name;
-    subCategory.isDeleted = subCategoryData.isDeleted ?? subCategory.isDeleted;
+    await referencesValidation.validateReference(
+      referencesValidation.categoryRepo,
+      subCategoryData.parentCategoryID || subCategory.parentCategoryID,
+      "Category"
+    );
+
+    const updatedData = {
+      ...subCategoryData,
+    };
+
+    console.log(subCategoryData, "updtsub");
 
     const updatedSubCategory = await subCategoryRepo.update(
       subCategoryId,
-      subCategory
+      updatedData
     );
 
     return new SubCategoryDto(updatedSubCategory);

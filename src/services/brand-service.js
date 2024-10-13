@@ -43,10 +43,10 @@ const BrandService = {
       throw new APIError("Brand not found!");
     }
 
-    brand.name = brandData.name || brand.name;
-    brand.isDeleted = brandData.isDeleted ?? brand.isDeleted;
-
-    const updatedBrand = await brandRepo.update(brandId, brand);
+    const updateData = {
+      ...brandData,
+    };
+    const updatedBrand = await brandRepo.update(brandId, updateData);
     return new BrandDto(updatedBrand);
   },
 

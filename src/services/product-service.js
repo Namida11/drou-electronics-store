@@ -3,41 +3,11 @@ import { ProductRepository } from "../repositories/product-repository.js";
 import ProductDto from "../dtos/product-dto.js";
 import APIError from "../utils/response/error.js";
 import { getFolderName } from "../utils/get-folder-name.js";
+import referencesValidation from "../validation/references/references-validation.js";
 
 const productRepo = new ProductRepository();
 
 const ProductService = {
-  // create: async function (productData) {
-  //   const existingProduct = await productRepo.findByUniqueFields({
-  //     name: productData.name,
-  //     category: productData.category,
-  //     brand: productData.brand,
-  //   });
-
-  //   if (existingProduct) {
-  //     throw new APIError("This product already exists!");
-  //   }
-  //   console.log(productData);
-
-  //   const imageUploadPromises = (productData.images || []).map(
-  //     async (image) => {
-  //       const result = await cloudinary.uploader.upload(image.path, {
-  //         folder: "products",
-  //       });
-  //       return result.secure_url;
-  //     }
-  //   );
-  //   const imageUrls = await Promise.all(imageUploadPromises);
-
-  //   // Yeni ürün oluşturma
-  //   const newProduct = await productRepo.create({
-  //     ...productData,
-  //     images: imageUrls,
-  //   });
-
-  //   return new ProductDto(newProduct);
-  // },
-
   create: async (productData, files) => {
     const existingProduct = await productRepo.findByUniqueFields({
       name: productData.name,
@@ -51,9 +21,12 @@ const ProductService = {
       );
       return new ProductDto(updatedProduct);
     }
+
     if (existingProduct && !existingProduct.isDeleted) {
       throw new APIError("This product already exists!");
     }
+
+    await referencesValidation.validateAllReferences(productData);
     const imageUrls = [];
 
     for (const file of files) {
@@ -85,8 +58,9 @@ const ProductService = {
     if (!product) {
       throw new APIError("Product not found!");
     }
-    console.log(productData, "prdcdataa");
-    
+
+    await referencesValidation.validateAllReferences(productData);
+
     let imageUrls = product.images;
     if (files && files.length > 0) {
       imageUrls = [];

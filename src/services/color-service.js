@@ -43,11 +43,11 @@ const ColorService = {
       throw new APIError("Color not found!");
     }
 
-    color.name = colorData.name || color.name;
-    color.hex = colorData.hex || color.hex;
-    color.isDeleted = colorData.isDeleted ?? color.isDeleted;
+    const updateData = {
+      ...colorData,
+    };
 
-    const updatedColor = await colorRepo.update(colorId, color);
+    const updatedColor = await colorRepo.update(colorId, colorData);
     return new ColorDto(updatedColor);
   },
 

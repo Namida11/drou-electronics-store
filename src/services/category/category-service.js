@@ -39,7 +39,6 @@ const CategoryService = {
     }
 
     const activeCategories = result.filter((category) => !category.isDeleted);
-  
 
     return activeCategories.map((category) => new CategoryDto(category));
   },
@@ -49,11 +48,11 @@ const CategoryService = {
     if (!category) {
       throw new APIError("Category not found!");
     }
+    const updateData = {
+      ...categoryData,
+    };
 
-    category.name = categoryData.name || category.name;
-    category.isDeleted = categoryData.isDeleted ?? category.isDeleted;
-
-    const updatedCategory = await categoryRepo.update(categoryId, category);
+    const updatedCategory = await categoryRepo.update(categoryId, updateData);
 
     return new CategoryDto(updatedCategory);
   },
