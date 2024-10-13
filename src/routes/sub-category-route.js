@@ -5,6 +5,7 @@ import SubCategoryController from "../controllers/category/sub-category-controll
 const route = Router();
 
 route.post("/create", SubCategoryController.create);
+
 route.get("/", SubCategoryController.getAll);
 
 route.patch("/update/:id", SubCategoryController.update);

@@ -1,12 +1,14 @@
 import SubCategoryDto from "../../dtos/sub-category-dto.js";
+import { CategoryRepository } from "../../repositories/category/category-repository.js";
 import { SubCategoryRepository } from "../../repositories/category/sub-category-repository.js";
 import APIError from "../../utils/response/error.js";
 
 const subCategoryRepo = new SubCategoryRepository();
+const categroyRepo = new CategoryRepository();
 
 const SubCategoryService = {
   create: async function (subCtg) {
-    console.log(subCtg);
+    const allCtg = await categroyRepo.findAll();
 
     const existingSubCategory = await subCategoryRepo.findByUniqueFields({
       name: subCtg.name,
@@ -25,7 +27,10 @@ const SubCategoryService = {
     if (existingSubCategory && !existingSubCategory.isDeleted) {
       throw new APIError("This sub-category already exists!");
     }
-
+    const isExistCtg = allCtg.map((ctg) => ctg.id == subCtg.parentCategoryID);
+    if (isExistCtg.length == 0) {
+      throw new APIError("This category doesnot exist!");
+    }
     const newSubCategory = await subCategoryRepo.create(subCtg);
     return new SubCategoryDto(newSubCategory);
   },
