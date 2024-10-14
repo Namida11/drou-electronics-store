@@ -36,7 +36,11 @@ const BrandService = {
     const activeBrands = result.filter((brand) => !brand.isDeleted);
     return activeBrands.map((brand) => new BrandDto(brand));
   },
+  getOne: async function (id) {
+    const data = await brandRepo.findByID(id);
 
+    return new BrandDto(data);
+  },
   update: async function (brandId, brandData) {
     const brand = await brandRepo.findByID(brandId);
     if (!brand) {

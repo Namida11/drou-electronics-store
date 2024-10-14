@@ -6,6 +6,7 @@ const route = Router();
 
 route.post("/create", BrandController.create);
 route.get("/", BrandController.getAll);
+route.get("/:id", BrandController.getOne);
 
 route.patch("/update/:id", BrandController.update);
 route.delete("/delete/:id", BrandController.delete);

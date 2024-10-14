@@ -25,6 +25,18 @@ const BrandController = {
       next(error);
     }
   },
+  getOne: async function (req, res, next) {
+    try {
+      const { id } = req.params;
+      
+      const brand = await BrandService.getOne(id);
+      return res.json(
+        new SuccessResponse(200, "Brands retrieved successfully", brand)
+      );
+    } catch (error) {
+      next(error);
+    }
+  },
 
   update: async (req, res, next) => {
     try {
