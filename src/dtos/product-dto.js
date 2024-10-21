@@ -10,7 +10,7 @@ export default class ProductDto {
     this.inStock = data.inStock;
     this.color = data.color;
     this.description = data.description;
-    this.image = data.image;
+    this.images = data.images;
     this.reviews = data.reviews;
     this.isDeleted = data.isDeleted;
   }
