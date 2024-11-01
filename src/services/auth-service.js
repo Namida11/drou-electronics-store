@@ -58,10 +58,9 @@ const AuthService = {
     const token = createToken(payload, process.env.JWT_SECRET, "1h");
 
     console.log(token);
-    const user = new LoginDto(userExist);
 
     const result = {
-      user: user,
+      ...new LoginDto(userExist),
       token: token,
     };
 

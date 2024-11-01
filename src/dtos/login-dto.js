@@ -1,6 +1,7 @@
+import UserDto from "./user-dto.js";
+
 export default class LoginDto {
   constructor(data) {
-    this.email = data.email;
-    this.role = data.role;
+    this.user = new UserDto(data);
   }
 }
