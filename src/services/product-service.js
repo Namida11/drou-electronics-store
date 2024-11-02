@@ -108,6 +108,21 @@ const ProductService = {
 
     return deletedProducts;
   },
+  decreaseProductCount: async function (productId, quantity) {
+    const product = await productRepo.findByID(productId);
+    if (!product) {
+      throw new APIError("Product not found!");
+    }
+
+    if (product.count < quantity) {
+      throw new APIError("Insufficient stock for product: " + product.name);
+    }
+
+    product.stock -= quantity;
+    await product.save();
+
+    return product;
+  },
 };
 
 export default ProductService;

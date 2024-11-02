@@ -1,7 +1,7 @@
 import OrderDto from "../dtos/order-dto.js";
 import { OrderRepository } from "../repositories/order-repository.js";
 import APIError from "../utils/response/error.js";
-
+import ProductService from "./product-service.js";
 const orderRepo = new OrderRepository();
 
 const OrderService = {
@@ -13,14 +13,17 @@ const OrderService = {
     ) {
       throw new APIError("Order must include a user and at least one product.");
     }
-    console.log(orderData, "dataaa");
+    console.log(orderData.products, "products");
 
     const totalPrice = orderData.products.reduce(
       (total, item) => total + item.price * item.quantity,
       0
     );
 
-    // Yeni sifarişin yaradılması
+    for (const item of orderData.products) {
+      await ProductService.decreaseProductCount(item.product, item.quantity);
+    }
+
     const newOrder = await orderRepo.create({
       ...orderData,
       user: orderData.userId,
@@ -29,6 +32,7 @@ const OrderService = {
       paymentMethod: orderData.paymentMethod || "cash",
     });
     console.log(newOrder, "neworder");
+
     return new OrderDto(newOrder);
   },
 
@@ -39,7 +43,6 @@ const OrderService = {
       throw new APIError("No orders found!");
     }
 
-    
     const activeOrders = result.filter((order) => !order.isDeleted);
 
     return activeOrders.map((order) => new OrderDto(order));
@@ -61,7 +64,6 @@ const OrderService = {
       throw new APIError("Order not found!");
     }
 
-   
     order.status = orderData.status || order.status;
     order.paymentMethod = orderData.paymentMethod || order.paymentMethod;
     order.shippingAddress = orderData.shippingAddress || order.shippingAddress;
@@ -78,7 +80,6 @@ const OrderService = {
       throw new APIError("Order not found!");
     }
 
-   
     order.isDeleted = true;
     const deletedOrder = await orderRepo.update(orderId, order);
 
